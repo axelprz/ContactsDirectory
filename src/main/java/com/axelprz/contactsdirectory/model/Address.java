@@ -1,27 +1,28 @@
 package com.axelprz.contactsdirectory.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
-@Table(name = "addresses")
 @Entity
+@Table(name = "addresses")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Address {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String street;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_city")
-    @JsonIgnoreProperties({"addresses", "hibernateLazyInitializer"})
+    @JoinColumn(name = "id_city", nullable = false)
+    @JsonManagedReference("address-city")
     private City city;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "address")
-    @JsonIgnoreProperties({"address", "hibernateLazyInitializer"})
+    @JsonBackReference("contact-address")
     private Contact contact;
 
     public Address() {}

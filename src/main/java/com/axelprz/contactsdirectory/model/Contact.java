@@ -6,29 +6,36 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Table(name = "contacts")
 @Entity
+@Table(name = "contacts")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Contact {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String firstName;
+
+    @Column(nullable = false)
     private String lastName;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @Column(nullable = false)
     private LocalDate birthDate;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_address", referencedColumnName = "id")
-    @JsonIgnoreProperties({"contact", "hibernateLazyInitializer"})
+    @JsonManagedReference("contact-address")
     private Address address;
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference("contact-phone")
-    @JsonIgnoreProperties({"contact", "hibernateLazyInitializer"})
     private List<Phone> phones;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -37,11 +44,10 @@ public class Contact {
             joinColumns = @JoinColumn(name = "contact_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id")
     )
-    @JsonIgnoreProperties({"contacts", "hibernateLazyInitializer"})
+    @JsonManagedReference("contact-group")
     private List<Group> groups;
 
-    public Contact() {
-    }
+    public Contact() {}
 
     public Integer getId() {
         return id;

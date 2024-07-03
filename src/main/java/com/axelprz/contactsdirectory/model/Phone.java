@@ -6,23 +6,26 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
-@Table(name = "phones")
 @Entity
+@Table(name = "phones")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Phone {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String number;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PhoneType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_contact")
+    @JoinColumn(name = "id_contact", nullable = false)
     @JsonBackReference("contact-phone")
-    @JsonIgnoreProperties({"phones", "hibernateLazyInitializer"})
     private Contact contact;
 
     public Phone() {}

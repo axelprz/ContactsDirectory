@@ -5,7 +5,6 @@ import com.axelprz.contactsdirectory.model.State;
 import com.axelprz.contactsdirectory.repository.IStateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 

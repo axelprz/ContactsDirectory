@@ -6,7 +6,6 @@ import com.axelprz.contactsdirectory.model.City;
 import com.axelprz.contactsdirectory.repository.ICityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 

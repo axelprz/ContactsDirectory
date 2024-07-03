@@ -1,32 +1,33 @@
 package com.axelprz.contactsdirectory.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.util.List;
 
-@Table(name = "cities")
 @Entity
+@Table(name = "cities")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class City {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_state")
-    @JsonIgnoreProperties({"cities", "hibernateLazyInitializer"})
+    @JoinColumn(name = "id_state", nullable = false)
+    @JsonManagedReference("city-state")
     private State state;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "city")
-    @JsonIgnoreProperties({"city", "hibernateLazyInitializer"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "city", cascade = CascadeType.ALL)
+    @JsonBackReference("address-city")
     private List<Address> addresses;
 
-    public City(){}
+    public City() {}
 
     public Integer getId() {
         return id;
@@ -50,5 +51,13 @@ public class City {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 }
